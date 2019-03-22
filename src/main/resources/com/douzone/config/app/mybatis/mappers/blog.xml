@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="blog">
+	<insert id="insert" parameterType="int">
+		<![CDATA[ 
+			insert 
+			into blog
+			values ( #{user_no}, '내용을 적어주세요', 'LOGO사진을 넣어주세요')
+		]]>
+	</insert>
+	
+	<select id="getCount" parameterType = "string" resultType = "int">
+		<![CDATA[
+			select count(*)
+			from blog
+		]]>
+		<!-- 값을 제한할때 -->
+		<if test="_parameter != null and _parameter!=''">
+			where title like '%${search}%'
+		</if>
+	</select>
+	
+	<select id = "getlist-title" resultType = "blogvo" parameterType="map">
+		<![CDATA[
+			select title, id
+			from user a, blog b
+			where a.no = b.user_no
+			and title like '%${search}%'
+			limit 10 offset #{page}
+		]]>		
+	</select>
+	
+	<select id = "getlist-id" resultType = "blogvo" parameterType="map">
+		<![CDATA[
+			select title, id
+			from user a, blog b
+			where a.no = b.user_no
+			and id like '%${search}%'
+			limit 10 offset #{page}
+		]]>		
+	</select>
+	
+	<select id="getvo" resultType = "blogvo" parameterType="string">
+		<![CDATA[
+			select user_no, title, logo, id
+			from blog a, user b
+			where b.no = a.user_no
+			and id = #{id}
+		]]>		
+	</select>
+	
+	<update id="update" parameterType="blogvo">
+		<![CDATA[
+			update blog set title = #{title}, logo = #{logo}
+			where user_no = #{user_no} 
+		]]>
+	</update>
+	
+	<select id="getuserno" resultType = "int" parameterType="string">
+		<![CDATA[
+			select no
+			from user b
+			where id = #{id}
+		]]>
+	</select>
+</mapper>
